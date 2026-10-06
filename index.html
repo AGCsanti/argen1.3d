@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARGEN1.3D - Impresión 3D</title>
+    
+    <!-- Google Fonts: DM Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: #2446C4;
+            --color-secondary: #FFE14D;
+            --bg-dark: #07090E;
+            --bg-card: rgba(18, 24, 38, 0.75);
+            --bg-card-border: rgba(36, 70, 196, 0.3);
+            --text-main: #FFFFFF;
+            --text-sub: #A0AEC0;
+            --neon-glow-primary: 0 0 15px rgba(36, 70, 196, 0.5);
+            --neon-glow-secondary: 0 0 15px rgba(255, 225, 77, 0.4);
+            --font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(7, 9, 14, 0.88), rgba(7, 9, 14, 0.93)), 
+                url('https://i.ibb.co/8L8Wk12C/argen1-3d.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .fade-in-down {
+            animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(7, 9, 14, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.8rem 1.5rem;
+        }
+
+        .nav-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo span {
+            color: var(--color-secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-secondary);
+            background: rgba(255, 225, 77, 0.08);
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 6.5rem 1.2rem 3rem 1.2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .profile-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-primary);
+            box-shadow: var(--neon-glow-primary);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            background-color: #121826;
+        }
+
+        .profile-wrapper:hover .profile-img {
+            transform: scale(1.05) rotate(2deg);
+            border-color: var(--color-secondary);
+            box-shadow: var(--neon-glow-secondary);
+        }
+
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+            text-shadow: 0 0 20px rgba(36, 70, 196, 0.4);
+        }
+
+        .brand-subtitle {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-secondary);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--bg-card-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: #000;
+        }
+
+        .carousel-slide {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-item {
+            width: 33.333%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0d1322 0%, #1a233d 100%);
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 1.3rem;
+            user-select: none;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed rgba(255, 225, 77, 0.3);
+            background: radial-gradient(circle, rgba(36,70,196,0.2) 0%, rgba(7,9,14,0.8) 100%);
+        }
+
+        .placeholder-box svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--color-secondary);
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 42px;
+            background: rgba(7, 9, 14, 0.7);
+            border: 1px solid var(--color-primary);
+            color: var(--text-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .carousel-arrow:hover {
+            background: var(--color-primary);
+            color: #fff;
+            box-shadow: var(--neon-glow-primary);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-arrow.prev { left: 12px; }
+        .carousel-arrow.next { right: 12px; }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--color-secondary);
+            width: 24px;
+            border-radius: 10px;
+            box-shadow: var(--neon-glow-secondary);
+        }
+
+        .accordion-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .accordion-item {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .accordion-item:hover {
+            border-color: rgba(255, 225, 77, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            color: var(--color-secondary);
+        }
+
+        .accordion-header .title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .accordion-icon-tag {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--color-primary);
+            box-shadow: var(--neon-glow-primary);
+        }
+
+        .accordion-arrow {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            fill: none;
+            stroke: var(--color-secondary);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .accordion-item.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
+            padding: 0 1.5rem;
+            color: var(--text-sub);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 500px;
+            transition: max-height 0.4s cubic-bezier(0.9, 0, 0.8, 1), padding 0.3s ease;
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .contact-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(36, 70, 196, 0.15);
+            border: 1px solid var(--color-primary);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+            word-break: break-all;
+        }
+
+        .contact-card:hover {
+            background: var(--color-primary);
+            box-shadow: var(--neon-glow-primary);
+            transform: scale(1.02);
+        }
+
+        .social-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            border-color: var(--color-secondary);
+            color: var(--color-secondary);
+            background: rgba(255, 225, 77, 0.1);
+            transform: translateY(-2px);
+            box-shadow: var(--neon-glow-secondary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 1rem 1rem;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 600px) {
+            .nav-links {
+                gap: 0.5rem;
+            }
+            .nav-links a {
+                font-size: 0.8rem;
+                padding: 0.2rem 0.4rem;
+            }
+            .brand-title {
+                font-size: 2rem;
+            }
+            .carousel-container {
+                height: 200px;
+            }
+            .accordion-header {
+                padding: 1rem 1.2rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="fade-in-down">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">ARGEN1<span>.3D</span></a>
+            <ul class="nav-links">
+                <li><a href="#presentacion">Presentación</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="#redes">Redes</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="fade-in-up">
+        <section class="hero-section">
+            <div class="profile-wrapper">
+                <img 
+                    src="https://i.ibb.co/8L8Wk12C/argen1-3d.jpg" 
+                    alt="ARGEN1.3D Foto de Perfil" 
+                    class="profile-img"
+                    onerror="this.onerror=null; this.src='https://placehold.co/140x140/0d1322/FFE14D?text=3D';"
+                >
+            </div>
+            <h1 class="brand-title">ARGEN1.3D</h1>
+            <p class="brand-subtitle">IMPRESION 3D</p>
+        </section>
+
+        <section class="carousel-container" aria-label="Carrusel de imágenes">
+            <div class="carousel-slide" id="carouselSlide">
+                <div class="carousel-item">
+                    <div class="placeholder-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        <span>Imagen 1</span>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="placeholder-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        <span>Imagen 2</span>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="placeholder-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        <span>Imagen 3</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-arrow prev" id="prevBtn" aria-label="Anterior">&#10094;</button>
+            <button class="carousel-arrow next" id="nextBtn" aria-label="Siguiente">&#10095;</button>
+
+            <div class="carousel-indicators" id="indicators">
+                <span class="dot active" data-index="0"></span>
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+            </div>
+        </section>
+
+        <section class="accordion-group">
+            
+            <!-- Presentación -->
+            <div class="accordion-item active" id="presentacion">
+                <button class="accordion-header">
+                    <div class="title-wrapper">
+                        <span class="accordion-icon-tag"></span>
+                        <span>Presentación</span>
+                    </div>
+                    <svg class="accordion-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-content">
+                    <p>empresa dedicada a la impresión 3D. contanos tu idea y nosotros le damos vida</p>
+                </div>
+            </div>
+
+            <!-- Servicios -->
+            <div class="accordion-item" id="servicios">
+                <button class="accordion-header">
+                    <div class="title-wrapper">
+                        <span class="accordion-icon-tag"></span>
+                        <span>Servicios</span>
+                    </div>
+                    <svg class="accordion-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-content">
+                    <p>servicios de impresión, diseño y confección de piezas impresas en 3D.</p>
+                </div>
+            </div>
+
+            <!-- Contacto -->
+            <div class="accordion-item" id="contacto">
+                <button class="accordion-header">
+                    <div class="title-wrapper">
+                        <span class="accordion-icon-tag"></span>
+                        <span>Contacto</span>
+                    </div>
+                    <svg class="accordion-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-content">
+                    <p style="margin-bottom: 0.8rem;">Escribinos directamente a nuestro correo electrónico para presupuestos o consultas:</p>
+                    <a href="mailto:AAAJ@gmail.com" class="contact-card">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        <span>AAAJ@gmail.com</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Redes -->
+            <div class="accordion-item" id="redes">
+                <button class="accordion-header">
+                    <div class="title-wrapper">
+                        <span class="accordion-icon-tag"></span>
+                        <span>Redes</span>
+                    </div>
+                    <svg class="accordion-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-content">
+                    <p style="margin-bottom: 0.8rem;">Seguinos e interactuá con nosotros en nuestras plataformas:</p>
+                    <div class="social-buttons">
+                        <a href="#" class="social-btn" onclick="event.preventDefault();">
+                            <span>Instagram</span>
+                        </a>
+                        <a href="#" class="social-btn" onclick="event.preventDefault();">
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ARGEN1.3D - Impresión 3D. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* --- ACCORDION FUNCTIONALITY --- */
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const currentItem = header.parentElement;
+                    const isOpen = currentItem.classList.contains('active');
+
+                    // Alternar la sección clickeada
+                    if (isOpen) {
+                        currentItem.classList.remove('active');
+                    } else {
+                        currentItem.classList.add('active');
+                    }
+                });
+            });
+
+
+            /* --- CAROUSEL FUNCTIONALITY --- */
+            const slide = document.getElementById('carouselSlide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dots = document.querySelectorAll('.dot');
+            const totalSlides = 3;
+            let currentIndex = 0;
+            let autoSlideInterval;
+
+            function updateCarousel(index) {
+                currentIndex = (index + totalSlides) % totalSlides;
+                slide.style.transform = `translateX(-${currentIndex * 33.333}%)`;
+                
+                dots.forEach((dot, i) => {
+                    if (i === currentIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+
+            function startAutoSlide() {
+                stopAutoSlide();
+                autoSlideInterval = setInterval(() => {
+                    updateCarousel(currentIndex + 1);
+                }, 4000);
+            }
+
+            function stopAutoSlide() {
+                if (autoSlideInterval) {
+                    clearInterval(autoSlideInterval);
+                }
+            }
+
+            prevBtn.addEventListener('click', () => {
+                updateCarousel(currentIndex - 1);
+                startAutoSlide();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                updateCarousel(currentIndex + 1);
+                startAutoSlide();
+            });
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    updateCarousel(index);
+                    startAutoSlide();
+                });
+            });
+
+            // Iniciar carrusel automático
+            startAutoSlide();
+
+            // Pausar auto-slide al pasar el mouse por el carrusel
+            const carouselContainer = document.querySelector('.carousel-container');
+            carouselContainer.addEventListener('mouseenter', stopAutoSlide);
+            carouselContainer.addEventListener('mouseleave', startAutoSlide);
+        });
+    </script>
+</body>
+</html>
